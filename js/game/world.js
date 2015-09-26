@@ -84,3 +84,7 @@ function initWorld(){
 function displayRoomDescription(desc) {
 	$('#narration').html(desc);
 }
+
+function setRoomTitle(str) {
+	$('#area-title').html(str);
+}
