@@ -73,6 +73,8 @@ function room(x,y){
 		} else {
 			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>.");
 		}
+		worldTime += movementTime;
+		tick();
 		this.lastVisited = worldTime;
 		thePlayer.currentRoom = this;
 	}
