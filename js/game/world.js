@@ -1,8 +1,8 @@
 var theWorld = {};
 window.worldTemps = ["frozen", "cold", "cool", "warm", "hot", "scorching"];
 window.worldAtmospheres = ["none", "thin breathable", "thin unbreathable", "thin toxic", "normal breathable", "normal unbreathable", "normal toxic", "dense breathable", "dense unbreathable", "dense toxic"];
-window.worldVegitation["none","sparse","light","heavy","dense"];
-window.worldWildlife["none","small","diverse","sprawling"];
+window.worldVegitation = ["none","sparse","light","heavy","dense"];
+window.worldWildlife = ["none","small","diverse","sprawling"];
 
 function world(){
 	this.map = {};
@@ -56,8 +56,8 @@ function room(x,y){
 	this.contents = [];
 	this.changes = [];
         
-	this.enter() = function(){
-		if(lastVisited === "never"){
+	this.enter = function(){
+		if(this.lastVisited === "never"){
 			displayRoomDescription(this.description);
 		}
 		lastVisited = worldTime;
@@ -76,4 +76,8 @@ function initWorld(){
 	delete window.worldAtmospheres;
 	delete window.worldVegitation;
 	delete window.worldWildlife;
+}
+
+function displayRoomDescription(desc) {
+	$('#narration').text = desc;
 }
