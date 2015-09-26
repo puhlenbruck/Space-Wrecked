@@ -15,6 +15,31 @@ function world(){
 			return newRoom;
 		}
 	}
+	
+	this.getNorthRoom(startRoom){
+		newX = startRoom.loc[0];
+		neyY = startRoom.loc[1] + 1;
+		newRoom = getRoom(newX,newY);
+		return newRoom;
+	}
+	this.getEastRoom(startRoom){
+		newX = startRoom.loc[0] + 1;
+		neyY = startRoom.loc[1];
+		newRoom = getRoom(newX,newY);
+		return newRoom;
+	}
+	this.getSouthRoom(startRoom){
+		newX = startRoom.loc[0];
+		neyY = startRoom.loc[1] - 1;
+		newRoom = getRoom(newX,newY);
+		return newRoom;
+	}
+	this.getWestRoom(startRoom){
+		newX = startRoom.loc[0] - 1;
+		neyY = startRoom.loc[1];
+		newRoom = getRoom(newX,newY);
+		return newRoom;
+	}
 }
 
 function room(x,y){
