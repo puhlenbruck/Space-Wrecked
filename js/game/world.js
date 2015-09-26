@@ -22,25 +22,29 @@ function world(){
 		}
 	}
 	
-	this.getNorthRoom = function(startRoom){
+	this.getNorthRoom = function(){
+		var startRoom = thePlayer.currentRoom;
 		var newX = startRoom.loc[0];
 		var newY = startRoom.loc[1] + 1;
 		var newRoom = this.getRoom(newX,newY);
 		return newRoom;
 	}
-	this.getEastRoom = function(startRoom){
+	this.getEastRoom = function(){
+		var startRoom = thePlayer.currentRoom;
 		var newX = startRoom.loc[0] + 1;
 		var newY = startRoom.loc[1];
 		var newRoom = this.getRoom(newX,newY);
 		return newRoom;
 	}
-	this.getSouthRoom = function(startRoom){
+	this.getSouthRoom = function(){
+		var startRoom = thePlayer.currentRoom;
 		var newX = startRoom.loc[0];
 		var newY = startRoom.loc[1] - 1;
-		var newRoom = this.getRoom(newX,newY);
+		var newRoom = this.getRoom();
 		return newRoom;
 	}
-	this.getWestRoom = function(startRoom){
+	this.getWestRoom = function(){
+		var startRoom = thePlayer.currentRoom;
 		var newX = startRoom.loc[0] - 1;
 		var newY = startRoom.loc[1];
 		var newRoom = this.getRoom(newX,newY);
@@ -60,7 +64,6 @@ function room(x,y){
 		displayRoomDescription(this.description)
 		this.lastVisited = worldTime;
 		thePlayer.currentRoom = this;
-		
 	}
 }
 
@@ -79,5 +82,5 @@ function initWorld(){
 }
 
 function displayRoomDescription(desc) {
-	$('#narration').text = desc;
+	$('#narration').html(desc);
 }
