@@ -1,3 +1,5 @@
+var theWorld = {};
+
 function world(){
 	this.map = {};
 	this.map["0,0"] = new room(0,0);
@@ -10,34 +12,34 @@ function world(){
 		if(key in this.map){
 			return this.map[key];
 		} else{
-			newRoom = new room(x,y);
+			var newRoom = new room(x,y);
 			this.map[key] = newRoom;
 			return newRoom;
 		}
 	}
 	
-	this.getNorthRoom(startRoom){
+	this.getNorthRoom = function(startRoom){
 		newX = startRoom.loc[0];
 		neyY = startRoom.loc[1] + 1;
-		newRoom = getRoom(newX,newY);
+		var newRoom = getRoom(newX,newY);
 		return newRoom;
 	}
-	this.getEastRoom(startRoom){
+	this.getEastRoom = function(startRoom){
 		newX = startRoom.loc[0] + 1;
 		neyY = startRoom.loc[1];
-		newRoom = getRoom(newX,newY);
+		var newRoom = getRoom(newX,newY);
 		return newRoom;
 	}
-	this.getSouthRoom(startRoom){
+	this.getSouthRoom = function(startRoom){
 		newX = startRoom.loc[0];
 		neyY = startRoom.loc[1] - 1;
-		newRoom = getRoom(newX,newY);
+		var newRoom = getRoom(newX,newY);
 		return newRoom;
 	}
-	this.getWestRoom(startRoom){
+	this.getWestRoom = function(startRoom){
 		newX = startRoom.loc[0] - 1;
 		neyY = startRoom.loc[1];
-		newRoom = getRoom(newX,newY);
+		var newRoom = getRoom(newX,newY);
 		return newRoom;
 	}
 }
@@ -45,11 +47,23 @@ function world(){
 function room(x,y){
 	this.loc = [x,y];
 	this.description = "Room at (" + x + "," + y + ")";
-	this.lastVisited = 0;
-	this.lastChanged = 0;
+	this.lastVisited = "never";
+	this.lastChanged = "never";
+        this.contents = [];
 	this.changes = [];
+        
+	this.enter() = function(){
+		if(lastVisited === "never"){
+			displayRoomDescription(this.description);
+		}
+		lastVisited = worldTime;
+	}
 }
 
 function createCoordString(x,y){
 	return x + "," + y;
+}
+
+function initWorld(){
+	theWorld = new world();
 }

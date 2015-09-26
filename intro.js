@@ -1,4 +1,5 @@
 function start(){
-    tick(){
-    }
+    initWorld();
+    initPlayer();
+    tick();
 }
