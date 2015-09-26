@@ -7,9 +7,11 @@ window.worldWildlife = ["none","small","diverse","sprawling"];
 function world(){
 	this.map = {};
 	this.map["0,0"] = new room(0,0);
-	this.map["0,0"].description = "Crash Site"
+	this.map["0,0"].title = "Crash Site"
+	this.map["0,0"].description = "Ground 0.  My banged up shuttle is here.  I'll have to go repair it. I should be able to find the missing parts around"
 	this.map["shuttle"] = new room(0,0); // shuttle interior
-	this.map["shuttle"].description = "Inside The Shuttle";
+	this.map["shuttle"].description = "Inside my Shuttle I'm pretty safe.  All my equipment is here as well as my only chance of getting off this rock.  Supplies won't last forever though, and this thing is going nowhere fast.  I'll have to explore go out and explore the planet to find a hope of surviving";
+	this.map["shuttle"].title = "Shuttle Interior";
 	
 	this.getRoom = function(x,y){
 		var key = createCoordString(x,y);
@@ -40,7 +42,7 @@ function world(){
 		var startRoom = thePlayer.currentRoom;
 		var newX = startRoom.loc[0];
 		var newY = startRoom.loc[1] - 1;
-		var newRoom = this.getRoom();
+		var newRoom = this.getRoom(newX,newY);
 		return newRoom;
 	}
 	this.getWestRoom = function(){
@@ -62,7 +64,8 @@ function room(x,y){
 	this.changes = [];
         
 	this.enter = function(){
-		displayRoomDescription(this.description)
+		displayRoomDescription(this.description);
+		setRoomTitle(this.title);
 		this.lastVisited = worldTime;
 		thePlayer.currentRoom = this;
 	}
@@ -70,6 +73,19 @@ function room(x,y){
 
 function createCoordString(x,y){
 	return x + "," + y;
+}
+
+function moveNorth(){
+	theWorld.getNorthRoom().enter();
+}
+function moveEast(){
+	theWorld.getEastRoom().enter();
+}
+function moveSouth(){
+	theWorld.getSouthRoom().enter();
+}
+function moveWest(){
+	theWorld.getWestRoom().enter();
 }
 
 function initWorld(){
