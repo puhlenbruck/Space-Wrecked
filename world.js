@@ -1,4 +1,6 @@
 var theWorld = {};
+window.worldTemps = ["frozen", "cold", "cool", "warm", "hot", "scorching"];
+window.worldAtmospheres = ["none", "thin breathable", "thin unbrathable", "thin toxic", "normal breathable", "normal unbrathable", "normal toxic", "dense breathable", "dense unbrathable", "dense toxic"]
 
 function world(){
 	this.map = {};
@@ -49,7 +51,7 @@ function room(x,y){
 	this.description = "Room at (" + x + "," + y + ")";
 	this.lastVisited = "never";
 	this.lastChanged = "never";
-        this.contents = [];
+	this.contents = [];
 	this.changes = [];
         
 	this.enter() = function(){
@@ -66,4 +68,8 @@ function createCoordString(x,y){
 
 function initWorld(){
 	theWorld = new world();
+	theWorld.temperature = window.worldTemps[getRandomInt(0,window.worldTemps.length)];
+	theWorld.atmosphere = window.worldAtmospheres[getRandomInt(0,window.worldAtmospheres.length)];
+	delete window.worldTemps;
+	delete window.worldAtmospheres;
 }

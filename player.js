@@ -1,7 +1,7 @@
 var thePlayer = {};
 
 function player(){
-    this.currentRoom = {}
+    this.currentRoom = {};
 }
 
 function initPlayer(){
