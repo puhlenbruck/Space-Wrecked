@@ -12,7 +12,7 @@ function world(){
 	this.map["shuttle"].description = "Inside The Shuttle";
 	
 	this.getRoom = function(x,y){
-		key = createCoordString(x,y);
+		var key = createCoordString(x,y);
 		if(key in this.map){
 			return this.map[key];
 		} else{
@@ -23,27 +23,27 @@ function world(){
 	}
 	
 	this.getNorthRoom = function(startRoom){
-		newX = startRoom.loc[0];
-		neyY = startRoom.loc[1] + 1;
-		var newRoom = getRoom(newX,newY);
+		var newX = startRoom.loc[0];
+		var newY = startRoom.loc[1] + 1;
+		var newRoom = this.getRoom(newX,newY);
 		return newRoom;
 	}
 	this.getEastRoom = function(startRoom){
-		newX = startRoom.loc[0] + 1;
-		neyY = startRoom.loc[1];
-		var newRoom = getRoom(newX,newY);
+		var newX = startRoom.loc[0] + 1;
+		var newY = startRoom.loc[1];
+		var newRoom = this.getRoom(newX,newY);
 		return newRoom;
 	}
 	this.getSouthRoom = function(startRoom){
-		newX = startRoom.loc[0];
-		neyY = startRoom.loc[1] - 1;
-		var newRoom = getRoom(newX,newY);
+		var newX = startRoom.loc[0];
+		var newY = startRoom.loc[1] - 1;
+		var newRoom = this.getRoom(newX,newY);
 		return newRoom;
 	}
 	this.getWestRoom = function(startRoom){
-		newX = startRoom.loc[0] - 1;
-		neyY = startRoom.loc[1];
-		var newRoom = getRoom(newX,newY);
+		var newX = startRoom.loc[0] - 1;
+		var newY = startRoom.loc[1];
+		var newRoom = this.getRoom(newX,newY);
 		return newRoom;
 	}
 }
@@ -57,10 +57,10 @@ function room(x,y){
 	this.changes = [];
         
 	this.enter = function(){
-		if(this.lastVisited === "never"){
-			displayRoomDescription(this.description);
-		}
-		lastVisited = worldTime;
+		displayRoomDescription(this.description)
+		this.lastVisited = worldTime;
+		thePlayer.currentRoom = this;
+		
 	}
 }
 
