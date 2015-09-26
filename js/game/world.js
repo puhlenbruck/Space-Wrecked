@@ -66,6 +66,13 @@ function room(x,y){
 	this.enter = function(){
 		displayRoomDescription(this.description);
 		setRoomTitle(this.title);
+		if(this.title==="Shuttle Interior"){
+			setMovementOptions("<a onclick=exitShuttle()>Outside</a>.");
+		}else if(this.title==="Crash Site"){
+			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>. <a onclick=enterShuttle()>Enter Shuttle</a>.");
+		} else {
+			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>.");
+		}
 		this.lastVisited = worldTime;
 		thePlayer.currentRoom = this;
 	}
@@ -87,6 +94,12 @@ function moveSouth(){
 function moveWest(){
 	theWorld.getWestRoom().enter();
 }
+function exitShuttle(){
+	theWorld.getRoom(0,0).enter();
+}
+function enterShuttle(){
+	theWorld.map["shuttle"].enter();
+}
 
 function initWorld(){
 	theWorld = new world();
@@ -104,4 +117,8 @@ function displayRoomDescription(desc) {
 
 function setRoomTitle(str) {
 	$('#area-title').html(str);
+}
+
+function setMovementOptions(str){
+	$('#movement-options').html(str);
 }
