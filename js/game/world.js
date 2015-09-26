@@ -54,6 +54,7 @@ function world(){
 
 function room(x,y){
 	this.loc = [x,y];
+	this.title = "(" + x + "," + y +")";
 	this.description = "Room at (" + x + "," + y + ")";
 	this.lastVisited = "never";
 	this.lastChanged = "never";

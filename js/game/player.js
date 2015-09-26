@@ -6,5 +6,5 @@ function player(){
 
 function initPlayer(){
         thePlayer = new player();
-        thePlayer.currentRoom = theWorld.map["shuttle"];
+        theWorld.map["shuttle"].enter();
 }
