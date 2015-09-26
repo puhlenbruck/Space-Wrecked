@@ -1,6 +1,8 @@
 var theWorld = {};
 window.worldTemps = ["frozen", "cold", "cool", "warm", "hot", "scorching"];
-window.worldAtmospheres = ["none", "thin breathable", "thin unbrathable", "thin toxic", "normal breathable", "normal unbrathable", "normal toxic", "dense breathable", "dense unbrathable", "dense toxic"]
+window.worldAtmospheres = ["none", "thin breathable", "thin unbreathable", "thin toxic", "normal breathable", "normal unbreathable", "normal toxic", "dense breathable", "dense unbreathable", "dense toxic"];
+window.worldVegitation["none","sparse","light","heavy","dense"];
+window.worldWildlife["none","small","diverse","sprawling"];
 
 function world(){
 	this.map = {};
@@ -72,4 +74,6 @@ function initWorld(){
 	theWorld.atmosphere = window.worldAtmospheres[getRandomInt(0,window.worldAtmospheres.length)];
 	delete window.worldTemps;
 	delete window.worldAtmospheres;
+	delete window.worldVegitation;
+	delete window.worldWildlife;
 }
