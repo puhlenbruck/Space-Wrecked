@@ -6329,16 +6329,19 @@ th.hide-for-touch {
 	  font-weight: bold;
   } 
 
-  .status.danger {
-	  color: red;
-	  font-weight: bold;
-  } 
-
   .status.good {
 	  color: green;
   } 
 
   .status.okay {
-	  color: goldenrod;
+	  color: darkorange;
   } 
 
+  .status.suffering {
+	  color: red;
+  }
+
+  .status.danger {
+	  color: red;
+	  font-weight: bold;
+  } 
