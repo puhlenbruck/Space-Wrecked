@@ -7,6 +7,7 @@ var passOut = false;
 
 function tick(){
 	worldTime++;
+	fluffTimes += getRandomInt(1, 150);
 	thePlayer.useResources();
 }
 

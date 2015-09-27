@@ -250,7 +250,7 @@ function initPlayer(){
 	thePlayer = new player();
 	initInventory();
 	thePlayer.currentRoom = theWorld.map["shuttle"];
-	displayRoomDescription(thePlayer.currentRoom.description);
+	displayRoomDescription(thePlayer.currentRoom);
 	setRoomTitle(thePlayer.currentRoom.title);
 	setMovementOptions("<a onclick=exitShuttle()>Outside</a>.");
 	showRoomContents(thePlayer.currentRoom.contents);

@@ -1,17 +1,21 @@
 var theWorld = {};
-window.worldTemps = ["frozen", "cold", "cool", "warm", "hot", "scorching"];
-window.worldAtmospheres = ["none", "thin breathable", "thin unbreathable", "thin toxic", "normal breathable", "normal unbreathable", "normal toxic", "dense breathable", "dense unbreathable", "dense toxic"];
+window.worldTemps = ["frozen", "cold", "temperate", "warm", "hot", "scorching"];
+window.worldAtmospheres = ["none", "thin breathable", "thin unbreathable",
+	"thin toxic", "normal breathable", "normal unbreathable", "normal " +
+	"toxic", "dense breathable", "dense unbreathable", "dense toxic"];
 window.worldVegitation = ["none","sparse","light","heavy","dense"];
 window.worldWildlife = ["none","small","diverse","sprawling"];
 
-var workingShipSystems = {solarPanel:true, battery:true, airRecycler:true, waterRecycler:true, antenna:true, tranceiver:true, codec:true, fuel:true, engine:true, flightControl:true, environmentalSensors:true}
+var workingShipSystems = {solarPanel:true, battery:true, airRecycler:true,
+	waterRecycler:true, antenna:true, tranceiver:true, codec:true,
+	fuel:true, engine:true, flightControl:true, environmentalSensors:true}
 var questItemChance = 0.05;
 
 function world(){
 	this.map = {};
 	this.map["0,0"] = new room(0,0);
 	this.map["0,0"].title = "Crash Site";
-	this.map["0,0"].description = "Ground 0.  My banged up shuttle is here.  I'll have to go repair it. I should be able to find the missing parts around"
+	this.map["0,0"].description = "Ground 0. My banged up shuttle is here.  I'll have to go repair it. I should be able to find the missing parts around"
 	this.map["0,0"].contents = [];
 	this.map["shuttle"] = new room(0,0); // shuttle interior
 	this.map["shuttle"].description = "Inside my Shuttle I'm pretty safe.  All my equipment is here as well as my only chance of getting off this rock.  Supplies won't last forever though, and this thing is going nowhere fast.  I'll have to explore go out and explore the planet to find a hope of surviving";
@@ -62,7 +66,6 @@ function world(){
 function room(x,y){
 	this.loc = [x,y];
 	this.title = "(" + x + "," + y +")";
-	this.description = "Room at (" + x + "," + y + ")";
 	this.lastVisited = "never";
 	this.lastChanged = "never";
 	this.contents = [];
@@ -71,13 +74,15 @@ function room(x,y){
 		this.contents[0] = questItem;
 	}
 	this.changes = [];
+	this.description = fluff(this);
+
 	this.enter = function(){
 		thePlayer.currentRoom = this;
 		action(movementTime);
 		this.lastVisited = worldTime;
 	}
 	this.load = function(){
-		displayRoomDescription(this.description);
+		displayRoomDescription(this);
 		setRoomTitle(this.title);
 		if(this.title==="Shuttle Interior"){
 			setMovementOptions("<a onclick=exitShuttle()>Outside</a>.");
@@ -185,8 +190,8 @@ function initWorld(){
 	theWorld = new world();
 	theWorld.temperature = window.worldTemps[getRandomInt(0,window.worldTemps.length)];
 	theWorld.atmosphere = window.worldAtmospheres[getRandomInt(0,window.worldAtmospheres.length)];
-	theWorld.vegitation = window.worldVegitation[getRandomInt(0,window.worldAtmospheres.length)];
-	theWorld.Wildlife = window.worldWildlife[getRandomInt(0,window.worldWildlife.length)];
+	theWorld.vegetation = window.worldVegitation[getRandomInt(0,window.worldVegitation.length)];
+	theWorld.wildlife = window.worldWildlife[getRandomInt(0,window.worldWildlife.length)];
 	delete window.worldTemps;
 	delete window.worldAtmospheres;
 	delete window.worldVegitation;
@@ -229,8 +234,9 @@ function showRoomContents(contents){
 	$('#objects')[0].innerHTML = itemsString;
 }
 
-function displayRoomDescription(desc) {
-	$('#narration').html(desc);
+function displayRoomDescription(room) {
+	moveDesc = "<p>" + moveWords(room) + "</p>" + room.description;
+	$('#narration').html(moveDesc);
 }
 
 function setRoomTitle(str) {
