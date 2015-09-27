@@ -2,6 +2,7 @@ var worldTime = 0;
 var ticksInEarthDay = 48;
 var gameDays = 0;
 var movementTime = 1;
+var messages = [];
 
 function tick(){
 	worldTime++;
@@ -22,9 +23,17 @@ function update(){
 	$('#daycount').html("Day " + gameDays);
 	updateResourceIndicators();
 	updateWorkingSystems();
+	updateMessages();
 }
 
-
+function updateMessages(){
+	var output = "";
+	for(msg in messages){
+		output += messages[msg] + "<br>";
+	}
+	$('#message').html(output);
+	messages = [];
+}
 
 function checkDeath(){
 }

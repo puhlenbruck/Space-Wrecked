@@ -10,7 +10,7 @@ var questItemChance = 0.05;
 function world(){
 	this.map = {};
 	this.map["0,0"] = new room(0,0);
-	this.map["0,0"].title = "Crash Site"
+	this.map["0,0"].title = "Crash Site";
 	this.map["0,0"].description = "Ground 0.  My banged up shuttle is here.  I'll have to go repair it. I should be able to find the missing parts around"
 	this.map["0,0"].contents = [];
 	this.map["shuttle"] = new room(0,0); // shuttle interior
@@ -85,7 +85,7 @@ function room(x,y){
 		showRoomContents(this.contents);
 		action(movementTime);
 		this.lastVisited = worldTime;
-
+		
 	}
 }
 
@@ -100,6 +100,7 @@ function generateQuestItem(){
 		itemName = nameOfItem(possibleItems[getRandomInt(0,possibleItems.length)]);
 		item = new item();
 		item.name = itemName;
+		item.size = 5;
 		return item;
 	}
 }

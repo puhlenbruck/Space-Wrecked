@@ -42,6 +42,10 @@ function player(){
 		if(this.water>0){this.water--;}else{this.timeWithoutWater++;}
 		if(this.food>0){this.ood++;}else{this.timeWithoutFood++;}
 	}
+	
+	this.pickup = function(item){
+		
+	}
 }
 
 function updateResourceIndicators(){
@@ -82,6 +86,7 @@ function updateResourceIndicators(){
 }
 
 function killPlayer(msg){
+	messages.push(msg);
 }
 
 function sleepPlayer(){
