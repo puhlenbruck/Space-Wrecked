@@ -106,9 +106,9 @@ function updateWorkingSystems(){
 	var brokenSystems = "Broken:"
 	for(var system in workingShipSystems){
 		if (workingShipSystems[system]){
-			workingSystems += "<li>" + nameOfShipSystem(system);
+			workingSystems += "<li>" + nameOfItem(system);
 		} else {
-			brokenSystems += "<li>" + nameOfShipSystem(system);
+			brokenSystems += "<li>" + nameOfItem(system);
 		}
 	theWorld.map["shuttle"].contents[0] = workingSystems;
 	theWorld.map["shuttle"].contents[1] = brokenSystems;
@@ -176,7 +176,7 @@ function showRoomContents(contents){
 		itemsString = "<p>There is nothing of use here</p>"
 	} else {
 		for(var item in contents){
-			itemsString += "<p>" + nameOfShipSystem(contents[item]) + "</p>";
+			itemsString += "<p>" + nameOfItem(contents[item]) + "</p>";
 		}
 	}
 	$('#objects').html(itemsString);
