@@ -16,7 +16,7 @@ function world(){
 	this.map["shuttle"] = new room(0,0); // shuttle interior
 	this.map["shuttle"].description = "Inside my Shuttle I'm pretty safe.  All my equipment is here as well as my only chance of getting off this rock.  Supplies won't last forever though, and this thing is going nowhere fast.  I'll have to explore go out and explore the planet to find a hope of surviving";
 	this.map["shuttle"].title = "Shuttle Interior";
-	this.map["shuttle"].contents = ["Broken Stuff","Working Stuff","Space Stuff"];
+	this.map["shuttle"].contents = ["<p>Broken Stuff</p>","<p>Working Stuff</p>","<p>Space Stuff</p>"];
 	
 	this.getRoom = function(x,y){
 		var key = createCoordString(x,y);
@@ -102,17 +102,17 @@ function generateQuestItem(){
 }
 
 function updateWorkingSystems(){
-	var workingSystems = "Working:"
-	var brokenSystems = "Broken:"
+	var workingSystems = "<div>Working:<ul>"
+	var brokenSystems = "<div>Broken:<ul>"
 	for(var system in workingShipSystems){
 		if (workingShipSystems[system]){
-			workingSystems += "<li>" + nameOfItem(system);
+			workingSystems += "<li>" + nameOfItem(system) + "</li>";
 		} else {
-			brokenSystems += "<li>" + nameOfItem(system);
+			brokenSystems += "<li>" + nameOfItem(system) + "</li>";
 		}
-	theWorld.map["shuttle"].contents[0] = workingSystems;
-	theWorld.map["shuttle"].contents[1] = brokenSystems;
 	}
+	theWorld.map["shuttle"].contents[0] = workingSystems + "</ul></div>";
+	theWorld.map["shuttle"].contents[1] = brokenSystems + "</ul></div>";
 }
 
 function createCoordString(x,y){
@@ -173,13 +173,13 @@ function breakSystems(){
 function showRoomContents(contents){
 	var itemsString = "";
 	if (contents.length == 0){
-		itemsString = "<p>There is nothing of use here</p>"
+		itemsString = "<p>There is nothing of use here.</p>"
 	} else {
 		for(var item in contents){
-			itemsString += "<p>" + nameOfItem(contents[item]) + "</p>";
+			itemsString += nameOfItem(contents[item]);
 		}
 	}
-	$('#objects').html(itemsString);
+	$('#objects')[0].innerHTML = itemsString;
 }
 
 function displayRoomDescription(desc) {
