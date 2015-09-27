@@ -88,7 +88,9 @@ function room(x,y){
 			setMovementOptions("<a onclick=exitShuttle()>Outside</a>.");
 		}else if(this.title==="Crash Site"){
 			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>. <a onclick=enterShuttle()>Enter Shuttle</a>.");
-		} else {
+		}else if(!thePlayer.isAlive){
+			setMovementOptions("");
+		}else{
 			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>.");
 		}
 		showRoomContents(this.contents);
@@ -103,6 +105,20 @@ function room(x,y){
 		}
 		removed.quantity = 1;
 		return removed;
+	}
+	
+	this.addItem = function(item){
+		var unique = true;
+		for(var index in this.contents){
+			if (this.contents[index].name === item.name){
+				this.contents[index].quantity += item.quantity;
+				unique = false;
+				break;
+			}
+		}
+		if(unique){
+			this.contents.push(item);
+		}
 	}
 }
 
@@ -141,11 +157,11 @@ function updateLocalOptions(){
 	var optionsString = "";
 	var stuff = thePlayer.currentRoom.contents;
 	for(item in stuff){
-		var time = 1;
+		var time = 0;
 		if("pickupTime" in stuff){
 			time = stuff[item].pickupTime;
 		}
-		var str = "<span class='label radius secondary'>" + time + "</span> <a onclick='grabItem(this)' objectname='"+stuff[item].name+"' time='"+time+"'>"+nameOfItem(stuff[item].name)+"</a>";
+		var str = "<span class='label radius secondary'>" + time + "</span> <a onclick='grabItem(this)' objectname='"+stuff[item].name+"' time='"+time+"'>Pick up "+nameOfItem(stuff[item].name) + "</a>";
 		optionsString += str + "<br />";
 	}
 	$('#local-options').html(optionsString);
@@ -228,7 +244,11 @@ function showRoomContents(contents){
 		itemsString += "<p>There is nothing of use here.</p>"
 	} else {
 		for(var item in contents){
-			itemsString += "<p>" + nameOfItem(contents[item].name) + "</p>";
+			itemsString += "<p>" + nameOfItem(contents[item].name);
+			if(contents[item].quantity > 1){
+			itemsString += " (" + contents[item].quantity + ")";
+		}
+		itemsString += "</p>";
 		}
 	}
 	$('#objects')[0].innerHTML = itemsString;

@@ -76,7 +76,7 @@ function player(){
 			action(0);
 		}else{
 			this.addToInventory(this.currentRoom.removeItem(i));
-			action(0);
+			action(i["pickupTime"]);
 		}
 	}
 	
@@ -181,13 +181,15 @@ function player(){
 function updateInventory(){
 	var displayString = "";
 	for(var i in thePlayer.inventory){
+		var itemStr = ""
 		var name = thePlayer.inventory[i].name;
 		var amount = thePlayer.inventory[i].quantity;
-		displayString += "<li>" + name;
+		itemStr += "<li><a onclick='drop(this)' objectname='"+name+"'>" + name;
 		if(amount > 1){
-			displayString += " (" + amount + ")"
+			itemStr += " (" + amount + ")"
 		}
-		displayString += "</li>";
+		itemStr += "</a></li>";
+		displayString += itemStr;
 	}
 	$('#inventory').html(displayString);
 }
@@ -233,6 +235,19 @@ function updateResourceIndicators(){
 	
 }
 
+function drop(element){
+	var attrs = element.attributes;
+	var stuff = thePlayer.inventory;
+	var name = attrs["objectname"];
+	for(item in stuff){
+		if(stuff[item].name === name.value){
+			thePlayer.currentRoom.addItem(thePlayer.removeFromInventory(stuff[item]));
+			break;
+		}
+	}
+	action(0);
+}
+	
 function killPlayer(msg){
 	messages.push(msg);
 	thePlayer.isAlive = false;
@@ -262,6 +277,7 @@ function initInventory(){
 	bottles["name"] = "Water Bottle";
 	bottles["quantity"] = 10;
 	bottles["drinks"] = 0;
+	bottles["pickupTime"];
 	thePlayer.addToInventory(bottles);
 	var rations = new Item();
 	rations["name"] = "Ration";
