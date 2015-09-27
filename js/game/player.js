@@ -73,6 +73,7 @@ function player(){
 	this.pickup = function(i){
 		if(i.size + this.encumbrance > this.carryCapacity){
 			messages.push("You are carrying too much");
+			action(0);
 		}else{
 			this.addToInventory(this.currentRoom.removeItem(i));
 			action(0);
@@ -259,12 +260,12 @@ function initPlayer(){
 function initInventory(){
 	var bottles = new Item();
 	bottles["name"] = "Water Bottle";
-	bottles["quantity"] = 5;
+	bottles["quantity"] = 10;
 	bottles["drinks"] = 0;
-	thePlayer.inventory.push(bottles);
+	thePlayer.addToInventory(bottles);
 	var rations = new Item();
 	rations["name"] = "Ration";
-	rations["size"] = 2;
+	rations["size"] = 5;
 	rations["quantity"] = 2;
-	thePlayer.inventory.push(rations);
+	thePlayer.addToInventory(rations);
 }

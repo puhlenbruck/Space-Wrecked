@@ -31,6 +31,7 @@ function update(){
 	updateWorkingSystems();
 	updateMessages();
 	updateInventory();
+	thePlayer.currentRoom.load();
 	if(passOut){
 		passOut = false;
 		sleepPlayer("You collapsed from exhaustion");

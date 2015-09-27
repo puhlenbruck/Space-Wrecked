@@ -72,20 +72,22 @@ function room(x,y){
 	}
 	this.changes = [];
 	this.enter = function(){
-		if (action(movementTime)){
-			displayRoomDescription(this.description);
-			setRoomTitle(this.title);
-			if(this.title==="Shuttle Interior"){
-				setMovementOptions("<a onclick=exitShuttle()>Outside</a>.");
-			}else if(this.title==="Crash Site"){
-				setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>. <a onclick=enterShuttle()>Enter Shuttle</a>.");
-			} else {
-				setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>.");
-			}
-			thePlayer.currentRoom = this;
-			showRoomContents(this.contents);
-			this.lastVisited = worldTime;
+		thePlayer.currentRoom = this;
+		action(movementTime);
+		this.lastVisited = worldTime;
+	}
+	this.load = function(){
+		displayRoomDescription(this.description);
+		setRoomTitle(this.title);
+		if(this.title==="Shuttle Interior"){
+			setMovementOptions("<a onclick=exitShuttle()>Outside</a>.");
+		}else if(this.title==="Crash Site"){
+			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>. <a onclick=enterShuttle()>Enter Shuttle</a>.");
+		} else {
+			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>.");
 		}
+		showRoomContents(this.contents);
+		updateLocalOptions();
 	}
 	this.removeItem = function(item){
 		var removed = jQuery.extend(true, {}, item);
@@ -128,6 +130,32 @@ function updateWorkingSystems(){
 	theWorld.map["shuttle"].systems = [];
 	theWorld.map["shuttle"].systems[0] = workingSystems + "</ul></div>";
 	theWorld.map["shuttle"].systems[1] = brokenSystems + "</ul></div>";
+}
+
+function updateLocalOptions(){
+	var optionsString = "";
+	var stuff = thePlayer.currentRoom.contents;
+	for(item in stuff){
+		var time = 1;
+		if("pickupTime" in stuff){
+			time = stuff[item].pickupTime;
+		}
+		var str = "<span class='label radius secondary'>" + time + "</span> <a onclick='grabItem(this)' objectname='"+stuff[item].name+"' time='"+time+"'>"+nameOfItem(stuff[item].name)+"</a>";
+		optionsString += str + "<br />";
+	}
+	$('#local-options').html(optionsString);
+}
+
+function grabItem(element){
+	var attrs = element.attributes;
+	var stuff = thePlayer.currentRoom.contents;
+	var name = attrs["objectname"];
+	for(item in stuff){
+		if(stuff[item].name = name.value){
+			thePlayer.pickup(stuff[item]);
+			break;
+		}
+	}
 }
 
 function createCoordString(x,y){
