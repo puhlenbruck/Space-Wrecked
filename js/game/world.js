@@ -83,7 +83,9 @@ function room(x,y){
 			setMovementOptions("<a onclick=exitShuttle()>Outside</a>.");
 		}else if(this.title==="Crash Site"){
 			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>. <a onclick=enterShuttle()>Enter Shuttle</a>.");
-		} else {
+		}else if(!thePlayer.isAlive){
+			setMovementOptions("");
+		}else{
 			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>.");
 		}
 		showRoomContents(this.contents);
