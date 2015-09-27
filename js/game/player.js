@@ -13,6 +13,9 @@ var waterRatio = 10;
 var foodRatio = 20;
 var sleepRatio = 15;
 
+var eatingRate = 10;
+var drinkingRate = 3;
+
 
 function player(){
 	this.currentRoom = {};
@@ -20,60 +23,165 @@ function player(){
 	this.encumbrance = 0;
 	this.inventory = [];
 	
-	this.air = 5;
-	this.water = 0;
-	this.food = 0;
+	this.isSleeping = false;
+	this.isAlive = true;
 	this.timeWithoutAir = 0;
 	this.timeWithoutWater = 0;
 	this.timeWithoutFood = 0;
 	this.timeWithoutSleep = 0;
 	
 	this.useResources = function(){
-		this.timeWithoutSleep++;
-
-		if(theWorld.atmosphere.match(/ breath/)) {
-			this.air++;
+		if(this.isSleeping){
+			this.timeWithoutSleep = 0;
+			this.breathe();
+			this.timeWithoutWater++;
+			this.timeWithoutFood++;
+		} else {
+			this.timeWithoutSleep++;
+			this.breathe();
+			this.drink();
+			this.eat();
 		}
-		if(this.air > 0) {
-			this.air--;
+	}
+	
+	
+	this.breathe = function(){
+		if(theWorld.atmosphere.match(/ breath/)) {
 		} else {
 			this.timeWithoutAir++;
 		}
-
-		if(this.water>0){this.water--;}else{this.timeWithoutWater++;}
-		if(this.food>0){this.ood++;}else{this.timeWithoutFood++;}
 	}
 	
-	this.pickup = function(item){
-		if(item.size + this.encumbrance > this.carryCapacity){
+	this.drink = function(){
+		if(this.hasWater()){
+			this.timeWithoutWater = 0;
+			this.depleteWater();
+		}else{
+			this.timeWithoutWater++;
+		}
+	}
+	
+	this.eat = function(){
+		if(this.hasFood() && this.timeWithoutFood > eatingRate){
+			this.timeWithoutFood = 0;
+			this.depleteFood();
+		}else{
+			this.timeWithoutFood++;
+		}
+	}
+	
+	this.pickup = function(i){
+		if(i.size + this.encumbrance > this.carryCapacity){
 			messages.push("You are carrying too much");
 		}else{
-			this.addToInventory(this.currentRoom.removeItem(item));
+			this.addToInventory(this.currentRoom.removeItem(i));
 			action(0);
 		}
 	}
 	
-	this.addToInventory = function(item){
+	this.addToInventory = function(i){
 		var unique = true;
-		for(i in this.inventory){
-			if (this.inventory[i].name === item.name){
-				this.inventory[i].quantity++;
+		for(var index in this.inventory){
+			if (this.inventory[index].name === i.name){
+				this.inventory[index].quantity += i.quantity;
 				unique = false;
 				break;
 			}
 		}
 		if(unique){
-			this.inventory.push(item);
+			this.inventory.push(i);
 		}
-		this.encumbrance += item.size;
+		this.encumbrance += i.size*i.quantity;
+	}
+	
+	this.removeFromInventory = function(i){
+		var removed = jQuery.extend(true, {}, i);
+		i.quantity--;
+		if(i.quantity < 1){
+			var index = this.inventory.indexOf(i);
+			this.inventory.splice(index,1);
+		}
+		removed.quantity = 1;
+		this.encumbrance -= i.size;
+		return removed;
+	}
+	
+	this.hasWater = function(){
+		var available = false;
+		for(var i in this.inventory){
+			var currItem = this.inventory[i].name
+			if(currItem === "Water Bottle" || currItem === "Half-Empty Bottle"){
+				available = true;
+				break;
+			}
+		}
+		return available;
+	}
+	
+	this.depleteWater = function(){
+		var bottle = this.selectBottleToDrink();
+		if(!("drinks" in bottle)){
+			bottle["drinks"] = 0;
+		}
+		if (bottle["drinks"]+1 >= drinkingRate){
+			bottle["drinks"] = 0;
+			this.removeFromInventory(bottle);
+			newBottle = {};
+			if(bottle["name"] === "Half-Empty Bottle"){
+				newBottle = new Item();
+				newBottle["name"] = "Empty Bottle";
+			} else {
+				newBottle = new Item();
+				newBottle["name"] = "Half-Empty Bottle";
+			}
+			newBottle["drinks"] = 0;
+			this.addToInventory(newBottle);
+		} else {
+			bottle["drinks"]++;
+		}
+	}
+	
+	this.selectBottleToDrink = function(){
+		var bottle = {};
+		for(var i in this.inventory){
+			if (this.inventory[i].name === "Half-Empty Bottle"){
+				bottle = this.inventory[i];
+				break;
+			}else if(this.inventory[i].name === "Water Bottle"){
+				bottle = this.inventory[i];
+			}
+		}
+		return bottle;
+	}
+	
+	this.hasFood = function(){
+		var available = false;
+		for(var i in this.inventory){
+			var currItem = this.inventory[i].name
+			if(currItem === "Ration"){
+				available = true;
+				break;
+			}
+		}
+		return available;
+	}
+	
+	this.depleteFood = function(){
+		for(var i in this.inventory){
+			var currItem = this.inventory[i].name
+			if(currItem === "Ration"){
+				this.removeFromInventory(this.inventory[i]);
+				break;
+			}
+		}
 	}
 }
 
 function updateInventory(){
 	var displayString = "";
-	for(item in thePlayer.inventory){
-		var name = thePlayer.inventory[item].name;
-		var amount = thePlayer.inventory[item].quantity;
+	for(var i in thePlayer.inventory){
+		var name = thePlayer.inventory[i].name;
+		var amount = thePlayer.inventory[i].quantity;
 		displayString += "<li>" + name;
 		if(amount > 1){
 			displayString += " (" + amount + ")"
@@ -88,53 +196,75 @@ function updateResourceIndicators(){
 	var waterThreshold = Math.ceil(thePlayer.timeWithoutWater/waterRatio);
 	var foodThreshold = Math.ceil(thePlayer.timeWithoutFood/foodRatio);
 	var sleepThreshold = Math.ceil(thePlayer.timeWithoutSleep/sleepRatio);
-
+	
 	if(airThreshold > airStatus.length-1) {
-		killPlayer("You Have Suffocated");
-	} else {
-		$('#air-status').html(airStatus[airThreshold]);
-		$('#air-status').removeClass('ideal good okay suffering danger');
-		$('#air-status').addClass(airStatusClass[airThreshold]);
-	}
-
+		killPlayer("You have suffocated");
+		airThreshold = airStatus.length-1;
+	} 
+	$('#air-status').html(airStatus[airThreshold]);
+	$('#air-status').removeClass('ideal good okay suffering danger');
+	$('#air-status').addClass(airStatusClass[airThreshold]);
+	
+	
 	if(waterThreshold > waterStatus.length-1){
-		killPlayer("You Have Died Of Thirst");
-	}else{
-		$('#water-status').html(waterStatus[waterThreshold]);
-		$('#water-status').removeClass('ideal good okay suffering danger');
-		$('#water-status').addClass(statusClass[waterThreshold]);
+		killPlayer("You have died of thirst.");
+		waterThreshold = waterStatus.length-1;
 	}
+	$('#water-status').html(waterStatus[waterThreshold]);
+	$('#water-status').removeClass('ideal good okay suffering danger');
+	$('#water-status').addClass(statusClass[waterThreshold]);
+	
 	if(foodThreshold > foodStatus.length-1){
-		killPlayer("You Have Suffocated");
-	}else{
-		$('#food-status').html(foodStatus[foodThreshold]);
-		$('#food-status').removeClass('ideal good okay suffering danger');
-		$('#food-status').addClass(statusClass[foodThreshold]);
+		killPlayer("You have starved to death.");
+		foodThreshold = foodStatus.length-1;
 	}
+	$('#food-status').html(foodStatus[foodThreshold]);
+	$('#food-status').removeClass('ideal good okay suffering danger');
+	$('#food-status').addClass(statusClass[foodThreshold]);
+	
 	if(sleepThreshold > sleepStatus.length-1){
-		sleepPlayer("You fell asleep");
+		passOut = true;
 	}else{
 		$('#sleep-status').html(sleepStatus[sleepThreshold]);
 		$('#sleep-status').removeClass('ideal good okay suffering danger');
 		$('#sleep-status').addClass(statusClass[sleepThreshold]);
 	}
+	
 }
 
 function killPlayer(msg){
 	messages.push(msg);
+	thePlayer.isAlive = false;
 }
 
 function sleepPlayer(msg){
 	messages.push(msg);
 	messages.push("You slept for 8 hours");
+	thePlayer.isSleeping = true;
+	action(16);
+	thePlayer.isSleeping = false;
 }
 
 function initPlayer(){
 	thePlayer = new player();
+	initInventory();
 	thePlayer.currentRoom = theWorld.map["shuttle"];
 	displayRoomDescription(thePlayer.currentRoom.description);
 	setRoomTitle(thePlayer.currentRoom.title);
 	setMovementOptions("<a onclick=exitShuttle()>Outside</a>.");
 	showRoomContents(thePlayer.currentRoom.contents);
 	this.lastVisited = worldTime;
+}
+
+function initInventory(){
+	var bottles = new Item();
+	bottles["name"] = "Water Bottle";
+	bottles["quantity"] = 5;
+	bottles["drinks"] = 0;
+	thePlayer.inventory.push(bottles);
+	var rations = new Item();
+	rations["name"] = "Ration";
+	rations["size"] = 2;
+	rations["quantity"] = 2;
+	thePlayer.inventory.push(rations);
 }

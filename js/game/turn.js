@@ -3,6 +3,7 @@ var ticksInEarthDay = 48;
 var gameDays = 0;
 var movementTime = 1;
 var messages = [];
+var passOut = false;
 
 function tick(){
 	worldTime++;
@@ -10,11 +11,16 @@ function tick(){
 }
 
 function action(time){
-	if(time === "undefined"){time = 1;}
-	for (t=0;t<time;t++){
-		tick();
+	if(thePlayer.isAlive){
+		if(time === "undefined"){time = 1;}
+		for (t=0;t<time;t++){
+			tick();
+		}
+		update();
+		return true;
+	} else {
+		return false;
 	}
-	update();
 }
 
 
@@ -25,6 +31,11 @@ function update(){
 	updateWorkingSystems();
 	updateMessages();
 	updateInventory();
+	if(passOut){
+		passOut = false;
+		sleepPlayer("You collapsed from exhaustion");
+		
+	}
 }
 
 function updateMessages(){
@@ -34,9 +45,6 @@ function updateMessages(){
 	}
 	$('#message').html(output);
 	messages = [];
-}
-
-function checkDeath(){
 }
 
 function checkVictory(){

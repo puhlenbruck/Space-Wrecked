@@ -72,20 +72,20 @@ function room(x,y){
 	}
 	this.changes = [];
 	this.enter = function(){
-		displayRoomDescription(this.description);
-		setRoomTitle(this.title);
-		if(this.title==="Shuttle Interior"){
-			setMovementOptions("<a onclick=exitShuttle()>Outside</a>.");
-		}else if(this.title==="Crash Site"){
-			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>. <a onclick=enterShuttle()>Enter Shuttle</a>.");
-		} else {
-			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>.");
+		if (action(movementTime)){
+			displayRoomDescription(this.description);
+			setRoomTitle(this.title);
+			if(this.title==="Shuttle Interior"){
+				setMovementOptions("<a onclick=exitShuttle()>Outside</a>.");
+			}else if(this.title==="Crash Site"){
+				setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>. <a onclick=enterShuttle()>Enter Shuttle</a>.");
+			} else {
+				setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>.");
+			}
+			thePlayer.currentRoom = this;
+			showRoomContents(this.contents);
+			this.lastVisited = worldTime;
 		}
-		thePlayer.currentRoom = this;
-		showRoomContents(this.contents);
-		action(movementTime);
-		this.lastVisited = worldTime;
-		
 	}
 	this.removeItem = function(item){
 		var removed = jQuery.extend(true, {}, item);
@@ -95,7 +95,7 @@ function room(x,y){
 			this.contents.splice(index,1);
 		}
 		removed.quantity = 1;
-		return removed();
+		return removed;
 	}
 }
 
@@ -108,7 +108,7 @@ function generateQuestItem(){
 			}
 		}
 		itemName = nameOfItem(possibleItems[getRandomInt(0,possibleItems.length)]);
-		item = new item();
+		item = new Item();
 		item.name = itemName;
 		item.size = 5;
 		return item;
