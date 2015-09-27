@@ -10,6 +10,7 @@ var workingShipSystems = {solarPanel:true, battery:true, airRecycler:true,
 	waterRecycler:true, antenna:true, tranceiver:true, codec:true,
 	fuel:true, engine:true, flightControl:true, environmentalSensors:true}
 var questItemChance = 0.05;
+var batteryPower = 10;
 
 function world(){
 	this.map = {};
@@ -164,7 +165,40 @@ function updateLocalOptions(){
 		var str = "<span class='label radius secondary'>" + time + "</span> <a onclick='grabItem(this)' objectname='"+stuff[item].name+"' time='"+time+"'>Pick up "+nameOfItem(stuff[item].name) + "</a>";
 		optionsString += str + "<br />";
 	}
+	if(thePlayer.currentRoom == theWorld.map["shuttle"]){
+		optionsString += shuttleOptions();
+	}
+	optionsString += "<span class='label radius secondary'>16</span> <a onclick='sleepPlayer(\"You decided to rest\")'>Sleep</a>";
 	$('#local-options').html(optionsString);
+}
+
+function shuttleOptions(){
+	var str = "";
+	str += waterRefillOption();
+	str += airRefillOption();
+	str += environmentScanOption();
+	str += shuttleRepairOptions();
+	return str;
+}
+
+function  waterRefillOption(){
+	var str = "";
+	if (workingShipSystems.waterRecycler && shipHasPower() && (thePlayer.has("Empty Bottle")||thePlayer.has("Half-Empty Bottle"))){
+		str += "<span class='label radius secondary'>1</span> <a onclick='fillBottle()'>Fill a Bottle</a><br />";
+	}
+	return str;
+}
+function airRefillOption(){
+	var str = "";
+	return str;
+}
+function environmentScanOption(){
+	var str = "";
+	return str;
+}
+function shuttleRepairOptions(){
+	var str = "";
+	return str;
 }
 
 function grabItem(element){
@@ -176,6 +210,17 @@ function grabItem(element){
 			thePlayer.pickup(stuff[item]);
 			break;
 		}
+	}
+}
+
+function shipHasPower(){
+	if(workingShipSystems.solarPanel){
+		return true;
+	}else if(workingShipSystems.battery && batteryPower > 0){
+		batteryPower--;
+		return true;
+	}else{
+		return false;
 	}
 }
 
