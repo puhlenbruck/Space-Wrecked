@@ -4,16 +4,19 @@ window.worldAtmospheres = ["none", "thin breathable", "thin unbreathable", "thin
 window.worldVegitation = ["none","sparse","light","heavy","dense"];
 window.worldWildlife = ["none","small","diverse","sprawling"];
 
-var workingShipSystems = {generator:true, battery:true, airRecycler:true, waterRecycler:true, anntenna:true, tranceiver:true, codec:true, fuel:true, engine:true, flightControl:true, environmentalSensors:true}
+var workingShipSystems = {solarPanel:true, battery:true, airRecycler:true, waterRecycler:true, anntenna:true, tranceiver:true, codec:true, fuel:true, engine:true, flightControl:true, environmentalSensors:true}
+var questItemChance = 0.05;
 
 function world(){
 	this.map = {};
 	this.map["0,0"] = new room(0,0);
 	this.map["0,0"].title = "Crash Site"
 	this.map["0,0"].description = "Ground 0.  My banged up shuttle is here.  I'll have to go repair it. I should be able to find the missing parts around"
+	this.map["0,0"].contents = ["Your shuttle is here"];
 	this.map["shuttle"] = new room(0,0); // shuttle interior
 	this.map["shuttle"].description = "Inside my Shuttle I'm pretty safe.  All my equipment is here as well as my only chance of getting off this rock.  Supplies won't last forever though, and this thing is going nowhere fast.  I'll have to explore go out and explore the planet to find a hope of surviving";
 	this.map["shuttle"].title = "Shuttle Interior";
+	this.map["shuttle"].contents = ["Broken Stuff","Working Stuff","Space Stuff"];
 	
 	this.getRoom = function(x,y){
 		var key = createCoordString(x,y);
@@ -63,8 +66,11 @@ function room(x,y){
 	this.lastVisited = "never";
 	this.lastChanged = "never";
 	this.contents = [];
+	var questItem = generateQuestItem();
+	if (typeof(questItem) != "undefined" ){
+		this.contents[0] = questItem;
+	}
 	this.changes = [];
-        
 	this.enter = function(){
 		displayRoomDescription(this.description);
 		setRoomTitle(this.title);
@@ -75,9 +81,37 @@ function room(x,y){
 		} else {
 			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>.");
 		}
+		showRoomContents(this.contents);
 		action(movementTime);
 		this.lastVisited = worldTime;
 		thePlayer.currentRoom = this;
+	}
+}
+
+function generateQuestItem(){
+	if(Math.random() < questItemChance){
+		possibleItems = [];
+		for(var system in workingShipSystems){
+			if (!workingShipSystems[system]){
+				possibleItems.push(system);
+			}
+		}
+		item = possibleItems[getRandomInt(0,possibleItems.length)];
+		return "You have found a " + item; 
+	}
+}
+
+function updateWorkingSystems(){
+	var workingSystems = "Working:"
+	var brokenSystems = "Broken:"
+	for(var system in workingShipSystems){
+		if (workingShipSystems[system]){
+			workingSystems += "<li>" + nameOfShipSystem(system);
+		} else {
+			brokenSystems += "<li>" + nameOfShipSystem(system);
+		}
+	theWorld.map["shuttle"].contents[0] = workingSystems;
+	theWorld.map["shuttle"].contents[1] = brokenSystems;
 	}
 }
 
@@ -115,6 +149,7 @@ function initWorld(){
 	delete window.worldVegitation;
 	delete window.worldWildlife;
 	breakSystems();
+	updateWorkingSystems();
 }
 
 function breakSystems(){
@@ -135,7 +170,19 @@ function breakSystems(){
 	}
 }
 
-splayRoomDescription(desc) {
+function showRoomContents(contents){
+	var itemsString = "";
+	if (contents.length == 0){
+		itemsString = "<p>There is nothing of use here</p>"
+	} else {
+		for(var item in contents){
+			itemsString += "<p>" + nameOfShipSystem(contents[item]) + "</p>";
+		}
+	}
+	$('#objects').html(itemsString);
+}
+
+function displayRoomDescription(desc) {
 	$('#narration').html(desc);
 }
 

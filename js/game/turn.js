@@ -21,7 +21,10 @@ function update(){
 	gameDays = Math.floor(worldTime/ticksInEarthDay);
 	$('#daycount').html("Day " + gameDays);
 	updateResourceIndicators();
+	updateWorkingSystems();
 }
+
+
 
 function checkDeath(){
 }
