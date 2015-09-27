@@ -5,6 +5,7 @@ var movementTime = 1;
 
 function tick(){
 	worldTime++;
+	thePlayer.useResources();
 }
 
 function action(time){
@@ -19,6 +20,7 @@ function action(time){
 function update(){
 	gameDays = Math.floor(worldTime/ticksInEarthDay);
 	$('#daycount').html("Day " + gameDays);
+	updateResourceIndicators();
 }
 
 function checkDeath(){

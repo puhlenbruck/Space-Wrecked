@@ -1,5 +1,5 @@
 function start(){
     initWorld();
     initPlayer();
-    tick();
+    update();
 }
