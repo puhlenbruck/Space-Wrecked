@@ -80,6 +80,15 @@ function player(){
 		}
 	}
 	
+	this.has = function(itemName){
+		for(index in this.inventory){
+			if(this.inventory[index].name===itemName){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	this.addToInventory = function(i){
 		var unique = true;
 		for(var index in this.inventory){
@@ -176,6 +185,24 @@ function player(){
 			}
 		}
 	}
+}
+
+function fillBottle(){
+	var inv = thePlayer.inventory;
+	bottleIndex = 0;
+	for(index in inv){
+		if(inv[index].name === "Empty Bottle"){
+			bottleIndex = index;
+			break;
+		}else if(inv[index].name === "Half-Empty Bottle"){
+			bottleIndex = index;
+		}
+	}
+	thePlayer.removeFromInventory(inv[bottleIndex]);
+	var newBottle = new Item();
+	newBottle["name"] = "Water Bottle";
+	thePlayer.addToInventory(newBottle);
+	action(1);
 }
 
 function updateInventory(){
