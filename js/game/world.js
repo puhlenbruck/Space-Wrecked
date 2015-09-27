@@ -12,11 +12,11 @@ function world(){
 	this.map["0,0"] = new room(0,0);
 	this.map["0,0"].title = "Crash Site"
 	this.map["0,0"].description = "Ground 0.  My banged up shuttle is here.  I'll have to go repair it. I should be able to find the missing parts around"
-	this.map["0,0"].contents = ["Your shuttle is here"];
+	this.map["0,0"].contents = [];
 	this.map["shuttle"] = new room(0,0); // shuttle interior
 	this.map["shuttle"].description = "Inside my Shuttle I'm pretty safe.  All my equipment is here as well as my only chance of getting off this rock.  Supplies won't last forever though, and this thing is going nowhere fast.  I'll have to explore go out and explore the planet to find a hope of surviving";
 	this.map["shuttle"].title = "Shuttle Interior";
-	this.map["shuttle"].contents = ["<p>Broken Stuff</p>","<p>Working Stuff</p>","<p>Space Stuff</p>"];
+	this.map["shuttle"].contents = [];
 	
 	this.getRoom = function(x,y){
 		var key = createCoordString(x,y);
@@ -81,10 +81,11 @@ function room(x,y){
 		} else {
 			setMovementOptions("<a onclick=moveNorth()>North</a>, <a onclick=moveSouth()>South</a>, <a onclick=moveEast()>East</a>, <a onclick=moveWest()>West</a>.");
 		}
+		thePlayer.currentRoom = this;
 		showRoomContents(this.contents);
 		action(movementTime);
 		this.lastVisited = worldTime;
-		thePlayer.currentRoom = this;
+
 	}
 }
 
@@ -96,8 +97,10 @@ function generateQuestItem(){
 				possibleItems.push(system);
 			}
 		}
-		item = possibleItems[getRandomInt(0,possibleItems.length)];
-		return "You have found a " + item; 
+		itemName = nameOfItem(possibleItems[getRandomInt(0,possibleItems.length)]);
+		item = new item();
+		item.name = itemName;
+		return item;
 	}
 }
 
@@ -111,8 +114,9 @@ function updateWorkingSystems(){
 			brokenSystems += "<li>" + nameOfItem(system) + "</li>";
 		}
 	}
-	theWorld.map["shuttle"].contents[0] = workingSystems + "</ul></div>";
-	theWorld.map["shuttle"].contents[1] = brokenSystems + "</ul></div>";
+	theWorld.map["shuttle"].systems = [];
+	theWorld.map["shuttle"].systems[0] = workingSystems + "</ul></div>";
+	theWorld.map["shuttle"].systems[1] = brokenSystems + "</ul></div>";
 }
 
 function createCoordString(x,y){
@@ -172,11 +176,15 @@ function breakSystems(){
 
 function showRoomContents(contents){
 	var itemsString = "";
+	if(thePlayer.currentRoom == theWorld.map["shuttle"]){
+		itemsString += theWorld.map["shuttle"].systems[0];
+		itemsString += theWorld.map["shuttle"].systems[1];
+	}
 	if (contents.length == 0){
-		itemsString = "<p>There is nothing of use here.</p>"
+		itemsString += "<p>There is nothing of use here.</p>"
 	} else {
 		for(var item in contents){
-			itemsString += nameOfItem(contents[item]);
+			itemsString += "<p>" + nameOfItem(contents[item].name) + "</p>";
 		}
 	}
 	$('#objects')[0].innerHTML = itemsString;
