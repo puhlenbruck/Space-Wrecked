@@ -17,7 +17,8 @@ var sleepRatio = 15;
 function player(){
 	this.currentRoom = {};
 	this.carryCapacity = 10;
-	this.inventory = {};
+	this.encumbrance = 0;
+	this.inventory = [];
 	
 	this.air = 5;
 	this.water = 0;
@@ -44,8 +45,42 @@ function player(){
 	}
 	
 	this.pickup = function(item){
-		
+		if(item.size + this.encumbrance > this.carryCapacity){
+			messages.push("You are carrying too much");
+		}else{
+			this.addToInventory(this.currentRoom.removeItem(item));
+			action(0);
+		}
 	}
+	
+	this.addToInventory = function(item){
+		var unique = true;
+		for(i in this.inventory){
+			if (this.inventory[i].name === item.name){
+				this.inventory[i].quantity++;
+				unique = false;
+				break;
+			}
+		}
+		if(unique){
+			this.inventory.push(item);
+		}
+		this.encumbrance += item.size;
+	}
+}
+
+function updateInventory(){
+	var displayString = "";
+	for(item in thePlayer.inventory){
+		var name = thePlayer.inventory[item].name;
+		var amount = thePlayer.inventory[item].quantity;
+		displayString += "<li>" + name;
+		if(amount > 1){
+			displayString += " (" + amount + ")"
+		}
+		displayString += "</li>";
+	}
+	$('#inventory').html(displayString);
 }
 
 function updateResourceIndicators(){
@@ -77,7 +112,7 @@ function updateResourceIndicators(){
 		$('#food-status').addClass(statusClass[foodThreshold]);
 	}
 	if(sleepThreshold > sleepStatus.length-1){
-		sleepPlayer();
+		sleepPlayer("You fell asleep");
 	}else{
 		$('#sleep-status').html(sleepStatus[sleepThreshold]);
 		$('#sleep-status').removeClass('ideal good okay suffering danger');
@@ -89,10 +124,17 @@ function killPlayer(msg){
 	messages.push(msg);
 }
 
-function sleepPlayer(){
+function sleepPlayer(msg){
+	messages.push(msg);
+	messages.push("You slept for 8 hours");
 }
 
 function initPlayer(){
 	thePlayer = new player();
-	theWorld.map["shuttle"].enter();
+	thePlayer.currentRoom = theWorld.map["shuttle"];
+	displayRoomDescription(thePlayer.currentRoom.description);
+	setRoomTitle(thePlayer.currentRoom.title);
+	setMovementOptions("<a onclick=exitShuttle()>Outside</a>.");
+	showRoomContents(thePlayer.currentRoom.contents);
+	this.lastVisited = worldTime;
 }

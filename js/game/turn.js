@@ -24,6 +24,7 @@ function update(){
 	updateResourceIndicators();
 	updateWorkingSystems();
 	updateMessages();
+	updateInventory();
 }
 
 function updateMessages(){

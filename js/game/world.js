@@ -87,6 +87,16 @@ function room(x,y){
 		this.lastVisited = worldTime;
 		
 	}
+	this.removeItem = function(item){
+		var removed = jQuery.extend(true, {}, item);
+		item.quantity--;
+		if(item.quantity < 1){
+			var index = this.contents.indexOf(item);
+			this.contents.splice(index,1);
+		}
+		removed.quantity = 1;
+		return removed();
+	}
 }
 
 function generateQuestItem(){
