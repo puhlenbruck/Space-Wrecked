@@ -4,6 +4,8 @@ window.worldAtmospheres = ["none", "thin breathable", "thin unbreathable", "thin
 window.worldVegitation = ["none","sparse","light","heavy","dense"];
 window.worldWildlife = ["none","small","diverse","sprawling"];
 
+var workingShipSystems = {generator:true, battery:true, airRecycler:true, waterRecycler:true, anntenna:true, tranceiver:true, codec:true, fuel:true, engine:true, flightControl:true, environmentalSensors:true}
+
 function world(){
 	this.map = {};
 	this.map["0,0"] = new room(0,0);
@@ -106,13 +108,34 @@ function initWorld(){
 	theWorld = new world();
 	theWorld.temperature = window.worldTemps[getRandomInt(0,window.worldTemps.length)];
 	theWorld.atmosphere = window.worldAtmospheres[getRandomInt(0,window.worldAtmospheres.length)];
+	theWorld.vegitation = window.worldVegitation[getRandomInt(0,window.worldAtmospheres.length)];
+	theWorld.Wildlife = window.worldWildlife[getRandomInt(0,window.worldWildlife.length)];
 	delete window.worldTemps;
 	delete window.worldAtmospheres;
 	delete window.worldVegitation;
 	delete window.worldWildlife;
+	breakSystems();
 }
 
-function displayRoomDescription(desc) {
+function breakSystems(){
+	for (var system in workingShipSystems){
+		if (Math.random()<0.8){
+			workingShipSystems[system] = false;
+		}
+	}
+	if(workingShipSystems.antenna && workingShipSystems.tranceiver && workingShipSystems.codec){
+		workingShipSystems.antenna = false;
+		workingShipSystems.tranceiver = false;
+		workingShipSystems.codec = false;
+	}
+	if(workingShipSystems.fuel && workingShipSystems.engine && workingShipSystems.flightControl){
+		workingShipSystems.fuel = false;
+		workingShipSystems.engine = false;
+		workingShipSystems.flightControl = false;
+	}
+}
+
+splayRoomDescription(desc) {
 	$('#narration').html(desc);
 }
 
