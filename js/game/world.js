@@ -4,7 +4,7 @@ window.worldAtmospheres = ["none", "thin breathable", "thin unbreathable", "thin
 window.worldVegitation = ["none","sparse","light","heavy","dense"];
 window.worldWildlife = ["none","small","diverse","sprawling"];
 
-var workingShipSystems = {solarPanel:true, battery:true, airRecycler:true, waterRecycler:true, anntenna:true, tranceiver:true, codec:true, fuel:true, engine:true, flightControl:true, environmentalSensors:true}
+var workingShipSystems = {solarPanel:true, battery:true, airRecycler:true, waterRecycler:true, antenna:true, tranceiver:true, codec:true, fuel:true, engine:true, flightControl:true, environmentalSensors:true}
 var questItemChance = 0.05;
 
 function world(){
@@ -106,9 +106,9 @@ function updateWorkingSystems(){
 	var brokenSystems = "<div>Broken:<ul>"
 	for(var system in workingShipSystems){
 		if (workingShipSystems[system]){
-			workingSystems += "<li>" + nameOfShipSystem(system) + "</li>";
+			workingSystems += "<li>" + nameOfItem(system) + "</li>";
 		} else {
-			brokenSystems += "<li>" + nameOfShipSystem(system) + "</li>";
+			brokenSystems += "<li>" + nameOfItem(system) + "</li>";
 		}
 	}
 	theWorld.map["shuttle"].contents[0] = workingSystems + "</ul></div>";
@@ -176,7 +176,7 @@ function showRoomContents(contents){
 		itemsString = "<p>There is nothing of use here.</p>"
 	} else {
 		for(var item in contents){
-			itemsString += nameOfShipSystem(contents[item]);
+			itemsString += nameOfItem(contents[item]);
 		}
 	}
 	$('#objects')[0].innerHTML = itemsString;
