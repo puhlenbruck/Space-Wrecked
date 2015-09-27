@@ -13,8 +13,12 @@ var waterRatio = 10;
 var foodRatio = 20;
 var sleepRatio = 15;
 
+
 function player(){
 	this.currentRoom = {};
+	this.carryCapacity = 10;
+	this.inventory = {};
+	
 	this.air = 5;
 	this.water = 0;
 	this.food = 0;
@@ -22,6 +26,7 @@ function player(){
 	this.timeWithoutWater = 0;
 	this.timeWithoutFood = 0;
 	this.timeWithoutSleep = 0;
+	
 	this.useResources = function(){
 		this.timeWithoutSleep++;
 
