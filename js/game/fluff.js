@@ -98,7 +98,7 @@ function moveWords(room) {
 						phrase += ", a blinding snowstorm building its banks.";
 						break;
 					case "temperate":
-						phrase += "drenched in ";
+						phrase += " drenched in ";
 						if(theWorld.atmosphere.match(/toxic/)) { phrase += "acid " };
 						phrase += "rain.";
 						break;
@@ -110,33 +110,43 @@ function moveWords(room) {
 						break;
 
 				}
+				break;
 			case "sparse":
 				switch(theWorld.temperature) {
 					case "frozen":
-						phrase += " Ice clings to a lone, spindly plant.";
+						phrase += ". Ice clings to a lone, spindly plant.";
+						break;
 					case "cold":
 					case "temperate":
 					case "hot":
-						phrase += " A branch cracks beneath your weight.";
+						phrase += ". A branch cracks beneath your weight.";
 						break;
 					case "scorching":
-						" Once-living flora disintigrates in the breeze.";
+						phrase += ". Once-living flora disintigrates in the breeze.";
+						break;
 				}
+				break;
 			case "light":
-				phrase += " You feel like you've seen this tree before.";
+				phrase += ". You feel like you've seen this plant-thing before.";
+				break;
 			case "heavy":
 				switch(theWorld.temperature) {
 					case "frozen":
 					case "cold":
-						phrase += " The frozen extremity of a plant snaps, landing nearby.";
+						phrase += ". The frozen extremity of a plant snaps, landing nearby.";
+						break;
 					case "temperate":
 					case "hot":
-						phrase += " Branches rattle in the wind.";
+						phrase += ", branches rattling in the wind.";
+						break;
 					case "scorching":
-						phrase += " You pull your leg free of the alien vine curling around it.";
+						phrase += ". You pull your leg free of the alien vine curling around it.";
+						break;
 				}
+				break;
 			case "dense":
-				phrase += " You snap whatever protrudes into your path in hopes of finding your way back.";
+				phrase += ". You snap whatever protrudes into your path in hopes of finding your way back.";
+				break;
 		}
 	} else { phrase += "." }
 
