@@ -259,7 +259,7 @@ function grabItem(element){
 	var stuff = thePlayer.currentRoom.contents;
 	var name = attrs["objectname"];
 	for(item in stuff){
-		if(stuff[item].name = name.value){
+		if(stuff[item].name === name.value){
 			thePlayer.pickup(stuff[item]);
 			break;
 		}

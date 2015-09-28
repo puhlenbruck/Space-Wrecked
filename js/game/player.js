@@ -258,9 +258,9 @@ function updateInventory(){
 	var displayString = "";
 	for(var i in thePlayer.inventory){
 		var itemStr = ""
-		var name = nameOfItem(thePlayer.inventory[i].name);
+		var name = thePlayer.inventory[i].name;
 		var amount = thePlayer.inventory[i].quantity;
-		itemStr += "<li><a onclick='drop(this)' objectname='"+name+"'>" + name;
+		itemStr += "<li><a onclick='drop(this)' objectname='"+name+"'>" + nameOfItem(name);
 		if(amount > 1){
 			itemStr += " (" + amount + ")"
 		}
