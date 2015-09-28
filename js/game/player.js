@@ -15,6 +15,7 @@ var sleepRatio = 15;
 
 var eatingRate = 15;
 var drinkingRate = 12;
+var breathingRate = 12;
 
 
 function player(){
@@ -46,6 +47,8 @@ function player(){
 	
 	
 	this.breathe = function(){
+		this.depleteAir();
+		
 		if(theWorld.atmosphere.match(/ breath/)) {
 		} else {
 			this.timeWithoutAir++;
@@ -193,6 +196,26 @@ function player(){
 			}
 		}
 	}
+	this.depleteAir = function(){
+		if(this.has("Air Canister")){
+			for(var index in this.inventory){
+				if(this.inventory[index].name === "Air Canister"){
+					if(!("uses" in this.inventory[index])){
+						this.inventory[index].uses = 0;
+					}
+					if (this.inventory[index].uses+1 >= breathingRate){
+						this.inventory[index].uses = 0;
+						this.removeFromInventory(this.inventory[index])
+						newCanister = new Item();
+						newCanister.name = "Empty Air Canister";
+						this.addToInventory(newCanister);
+					}else{
+						this.inventory[index].uses++;
+					}
+				}
+			}
+		}
+	}
 }
 
 function fillBottle(){
@@ -312,11 +335,15 @@ function initInventory(){
 	bottles["name"] = "Water Bottle";
 	bottles["quantity"] = 5;
 	bottles["drinks"] = 0;
-	bottles["pickupTime"];
 	thePlayer.addToInventory(bottles);
 	var rations = new Item();
 	rations["name"] = "Ration";
 	rations["size"] = 2;
 	rations["quantity"] = 5;
 	thePlayer.addToInventory(rations);
+	var canisters = new Item();
+	canisters["name"] = "Air Canister";
+	canisters["quantity"] = 5;
+	canisters["uses"] = 0;
+	thePlayer.addToInventory(canisters);
 }
