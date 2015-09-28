@@ -66,7 +66,7 @@ function world(){
 
 function room(x,y){
 	this.loc = [x,y];
-	this.title = "(" + x + "," + y +")";
+	this.title = "Outside (" + x + "," + y +")";
 	this.lastVisited = "never";
 	this.lastChanged = "never";
 	this.contents = [];
