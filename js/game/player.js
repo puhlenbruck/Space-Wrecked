@@ -47,11 +47,13 @@ function player(){
 	
 	
 	this.breathe = function(){
-		this.depleteAir();
-		
-		if(theWorld.atmosphere.match(/ breath/)) {
-		} else {
-			this.timeWithoutAir++;
+		if(thePlayer.currentRoom == theWorld.map["shuttle"]){
+		}else{
+			this.depleteAir();
+			if(theWorld.atmosphere.match(/ breath/) || thePlayer.has("Air Canister")) {
+			} else {
+				this.timeWithoutAir++;
+			}
 		}
 	}
 	
@@ -220,7 +222,7 @@ function player(){
 
 function fillBottle(){
 	var inv = thePlayer.inventory;
-	bottleIndex = 0;
+	var bottleIndex = 0;
 	for(index in inv){
 		if(inv[index].name === "Empty Bottle"){
 			bottleIndex = index;
@@ -233,6 +235,22 @@ function fillBottle(){
 	var newBottle = new Item();
 	newBottle["name"] = "Water Bottle";
 	thePlayer.addToInventory(newBottle);
+	action(1);
+}
+
+function fillCanister(){
+	var inv = thePlayer.inventory;
+	var canisterIndex = 0;
+	for(index in inv){
+		if(inv[index].name === "Empty Air Canister"){
+			canisterIndex = index;
+			break;
+		}
+	}
+	thePlayer.removeFromInventory(inv[canisterIndex]);
+	var newCanister = new Item();
+	newCanister["name"] = "Air Canister";
+	thePlayer.addToInventory(newCanister);
 	action(1);
 }
 
