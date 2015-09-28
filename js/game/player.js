@@ -13,13 +13,13 @@ var waterRatio = 10;
 var foodRatio = 20;
 var sleepRatio = 15;
 
-var eatingRate = 10;
-var drinkingRate = 3;
+var eatingRate = 15;
+var drinkingRate = 12;
 
 
 function player(){
 	this.currentRoom = {};
-	this.carryCapacity = 10;
+	this.carryCapacity = 20;
 	this.encumbrance = 0;
 	this.inventory = [];
 	
@@ -87,6 +87,14 @@ function player(){
 			}
 		}
 		return false;
+	}
+	
+	this.hasQuestItem = function(){
+		for(index in this.inventory){
+			if(this.inventory[index].isQuestItem){
+				return this.inventory[index];
+			}
+		}
 	}
 	
 	this.addToInventory = function(i){
@@ -209,7 +217,7 @@ function updateInventory(){
 	var displayString = "";
 	for(var i in thePlayer.inventory){
 		var itemStr = ""
-		var name = thePlayer.inventory[i].name;
+		var name = nameOfItem(thePlayer.inventory[i].name);
 		var amount = thePlayer.inventory[i].quantity;
 		itemStr += "<li><a onclick='drop(this)' objectname='"+name+"'>" + name;
 		if(amount > 1){
@@ -302,13 +310,13 @@ function initPlayer(){
 function initInventory(){
 	var bottles = new Item();
 	bottles["name"] = "Water Bottle";
-	bottles["quantity"] = 10;
+	bottles["quantity"] = 5;
 	bottles["drinks"] = 0;
 	bottles["pickupTime"];
 	thePlayer.addToInventory(bottles);
 	var rations = new Item();
 	rations["name"] = "Ration";
-	rations["size"] = 5;
-	rations["quantity"] = 2;
+	rations["size"] = 2;
+	rations["quantity"] = 5;
 	thePlayer.addToInventory(rations);
 }

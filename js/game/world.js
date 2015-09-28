@@ -131,10 +131,11 @@ function generateQuestItem(){
 				possibleItems.push(system);
 			}
 		}
-		itemName = nameOfItem(possibleItems[getRandomInt(0,possibleItems.length)]);
+		itemName = possibleItems[getRandomInt(0,possibleItems.length)];
 		item = new Item();
 		item.name = itemName;
 		item.size = 5;
+		item.isQuestItem = true;
 		return item;
 	}
 }
@@ -198,7 +199,25 @@ function environmentScanOption(){
 }
 function shuttleRepairOptions(){
 	var str = "";
+	var questItem = thePlayer.hasQuestItem()
+	if(!(typeof(questItem) === "undefined")){
+		var str = "<span class='label radius secondary'>5</span> <a onclick='installItem(this)' objectname='"+questItem.name+"'>Install  "+nameOfItem(questItem.name) + "</a><br />";
+	}
 	return str;
+}
+
+function installItem(element){
+	var attrs = element.attributes;
+	var name = attrs["objectname"];
+	workingShipSystems[name.value] = true;
+	var inv = thePlayer.inventory;
+	for(index in inv){
+		if(inv[index].name === name.value){
+			thePlayer.removeFromInventory(inv[index]);
+			break;
+		}
+	}
+	action(5);
 }
 
 function grabItem(element){
