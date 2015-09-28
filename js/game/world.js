@@ -10,6 +10,7 @@ var workingShipSystems = {solarPanel:true, battery:true, airRecycler:true,
 	waterRecycler:true, antenna:true, tranceiver:true, codec:true,
 	fuel:true, engine:true, flightControl:true, environmentalSensors:true}
 var questItemChance = 0.05;
+var resourceChance = 0.1;
 var batteryPower = 10;
 
 function world(){
@@ -74,6 +75,7 @@ function room(x,y){
 	if (typeof(questItem) != "undefined" ){
 		this.contents[0] = questItem;
 	}
+	this.contents = this.contents.concat(generateResourceDrop()); 
 	this.changes = [];
 	this.description = fluff(this);
 
@@ -123,6 +125,27 @@ function room(x,y){
 	}
 }
 
+function generateResourceDrop(){
+	var drops = [];
+	if(Math.random() < resourceChance){
+		foodDrop = new Item();
+		foodDrop.name = "Ration";
+		foodDrop.size = 2;
+		drops.push(foodDrop);
+	}
+	if(Math.random() < resourceChance){
+		waterDrop = new Item();
+		waterDrop.name = "Water Bottle";
+		drops.push(waterDrop);
+	}
+	if(Math.random() < resourceChance){
+		airDrop = new Item();
+		airDrop.name = "Air Canister";
+		drops.push(airDrop);
+	}
+	return drops;
+}
+
 function generateQuestItem(){
 	if(Math.random() < questItemChance){
 		possibleItems = [];
@@ -131,10 +154,11 @@ function generateQuestItem(){
 				possibleItems.push(system);
 			}
 		}
-		itemName = nameOfItem(possibleItems[getRandomInt(0,possibleItems.length)]);
+		itemName = possibleItems[getRandomInt(0,possibleItems.length)];
 		item = new Item();
 		item.name = itemName;
 		item.size = 5;
+		item.isQuestItem = true;
 		return item;
 	}
 }
@@ -184,21 +208,50 @@ function shuttleOptions(){
 function  waterRefillOption(){
 	var str = "";
 	if (workingShipSystems.waterRecycler && shipHasPower() && (thePlayer.has("Empty Bottle")||thePlayer.has("Half-Empty Bottle"))){
-		str += "<span class='label radius secondary'>1</span> <a onclick='fillBottle()'>Fill a Bottle</a><br />";
+		str += "<span class='label radius secondary'>1</span> <a onclick='fillBottle()'>Fill a Water Bottle</a><br />";
 	}
 	return str;
 }
 function airRefillOption(){
 	var str = "";
+	if (workingShipSystems.airRecycler && shipHasPower() && thePlayer.has("Empty Air Canister")){
+		str += "<span class='label radius secondary'>1</span> <a onclick='fillCanister()'>Fill an Air Canister</a><br />";
+	}
 	return str;
 }
 function environmentScanOption(){
 	var str = "";
+	if (workingShipSystems.environmentalSensors && shipHasPower()){
+		str += "<span class='label radius secondary'>2</span> <a onclick='scanWorld()'>Scan the Atmosphere</a><br />";
+	}
 	return str;
 }
 function shuttleRepairOptions(){
 	var str = "";
+	var questItem = thePlayer.hasQuestItem()
+	if(!(typeof(questItem) === "undefined")){
+		var str = "<span class='label radius secondary'>5</span> <a onclick='installItem(this)' objectname='"+questItem.name+"'>Install  "+nameOfItem(questItem.name) + "</a><br />";
+	}
 	return str;
+}
+
+function scanWorld(){
+	messages.push("The atmosphere on this planet is " + theWorld.atmosphere);
+	action(2);
+}
+
+function installItem(element){
+	var attrs = element.attributes;
+	var name = attrs["objectname"];
+	workingShipSystems[name.value] = true;
+	var inv = thePlayer.inventory;
+	for(index in inv){
+		if(inv[index].name === name.value){
+			thePlayer.removeFromInventory(inv[index]);
+			break;
+		}
+	}
+	action(5);
 }
 
 function grabItem(element){
@@ -259,6 +312,27 @@ function initWorld(){
 	delete window.worldWildlife;
 	breakSystems();
 	updateWorkingSystems();
+	initStash();
+}
+
+function initStash(){
+	var stash = [];
+	var bottles = new Item();
+	bottles["name"] = "Water Bottle";
+	bottles["quantity"] = 10;
+	bottles["drinks"] = 0;
+	stash.push(bottles);
+	var rations = new Item();
+	rations["name"] = "Ration";
+	rations["size"] = 2;
+	rations["quantity"] = 10;
+	stash.push(rations);
+	var canisters = new Item();
+	canisters["name"] = "Air Canister";
+	canisters["quantity"] = 10;
+	canisters["uses"] = 0;
+	stash.push(canisters);
+	theWorld.map["shuttle"].contents = stash;
 }
 
 function breakSystems(){

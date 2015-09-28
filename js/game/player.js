@@ -13,13 +13,14 @@ var waterRatio = 10;
 var foodRatio = 20;
 var sleepRatio = 15;
 
-var eatingRate = 10;
-var drinkingRate = 3;
+var eatingRate = 15;
+var drinkingRate = 12;
+var breathingRate = 12;
 
 
 function player(){
 	this.currentRoom = {};
-	this.carryCapacity = 10;
+	this.carryCapacity = 20;
 	this.encumbrance = 0;
 	this.inventory = [];
 	
@@ -46,9 +47,13 @@ function player(){
 	
 	
 	this.breathe = function(){
-		if(theWorld.atmosphere.match(/ breath/)) {
-		} else {
-			this.timeWithoutAir++;
+		if(thePlayer.currentRoom == theWorld.map["shuttle"]){
+		}else{
+			this.depleteAir();
+			if(theWorld.atmosphere.match(/ breath/) || thePlayer.has("Air Canister")) {
+			} else {
+				this.timeWithoutAir++;
+			}
 		}
 	}
 	
@@ -87,6 +92,14 @@ function player(){
 			}
 		}
 		return false;
+	}
+	
+	this.hasQuestItem = function(){
+		for(index in this.inventory){
+			if(this.inventory[index].isQuestItem){
+				return this.inventory[index];
+			}
+		}
 	}
 	
 	this.addToInventory = function(i){
@@ -185,11 +198,31 @@ function player(){
 			}
 		}
 	}
+	this.depleteAir = function(){
+		if(this.has("Air Canister")){
+			for(var index in this.inventory){
+				if(this.inventory[index].name === "Air Canister"){
+					if(!("uses" in this.inventory[index])){
+						this.inventory[index].uses = 0;
+					}
+					if (this.inventory[index].uses+1 >= breathingRate){
+						this.inventory[index].uses = 0;
+						this.removeFromInventory(this.inventory[index])
+						newCanister = new Item();
+						newCanister.name = "Empty Air Canister";
+						this.addToInventory(newCanister);
+					}else{
+						this.inventory[index].uses++;
+					}
+				}
+			}
+		}
+	}
 }
 
 function fillBottle(){
 	var inv = thePlayer.inventory;
-	bottleIndex = 0;
+	var bottleIndex = 0;
 	for(index in inv){
 		if(inv[index].name === "Empty Bottle"){
 			bottleIndex = index;
@@ -205,11 +238,27 @@ function fillBottle(){
 	action(1);
 }
 
+function fillCanister(){
+	var inv = thePlayer.inventory;
+	var canisterIndex = 0;
+	for(index in inv){
+		if(inv[index].name === "Empty Air Canister"){
+			canisterIndex = index;
+			break;
+		}
+	}
+	thePlayer.removeFromInventory(inv[canisterIndex]);
+	var newCanister = new Item();
+	newCanister["name"] = "Air Canister";
+	thePlayer.addToInventory(newCanister);
+	action(1);
+}
+
 function updateInventory(){
 	var displayString = "";
 	for(var i in thePlayer.inventory){
 		var itemStr = ""
-		var name = thePlayer.inventory[i].name;
+		var name = nameOfItem(thePlayer.inventory[i].name);
 		var amount = thePlayer.inventory[i].quantity;
 		itemStr += "<li><a onclick='drop(this)' objectname='"+name+"'>" + name;
 		if(amount > 1){
@@ -302,13 +351,17 @@ function initPlayer(){
 function initInventory(){
 	var bottles = new Item();
 	bottles["name"] = "Water Bottle";
-	bottles["quantity"] = 10;
+	bottles["quantity"] = 5;
 	bottles["drinks"] = 0;
-	bottles["pickupTime"];
 	thePlayer.addToInventory(bottles);
 	var rations = new Item();
 	rations["name"] = "Ration";
-	rations["size"] = 5;
-	rations["quantity"] = 2;
+	rations["size"] = 2;
+	rations["quantity"] = 5;
 	thePlayer.addToInventory(rations);
+	var canisters = new Item();
+	canisters["name"] = "Air Canister";
+	canisters["quantity"] = 5;
+	canisters["uses"] = 0;
+	thePlayer.addToInventory(canisters);
 }
