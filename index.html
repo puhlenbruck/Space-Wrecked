@@ -1,91 +1,75 @@
 <!doctype html>
 <html class="no-js" lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Space Wrecked</title>
-<link rel="stylesheet" href="css/foundation.css" />
-<script src="js/vendor/modernizr.js"></script>
-</head>
-<body>
-<div class="content">
-<div class="row">
-	<div class="large-12 columns">
-		<h1>Space Wrecked</h1>
-	</div>
-</div>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Space Wrecked</title>
+        <link rel="stylesheet" href="css/foundation.css" />
+        <script src="js/vendor/modernizr.js"></script>
+    </head>
+    <body>
+        <div class="content">
+            <div class="row">
+                <div class="large-12 columns">
+                    <h1>Space Wrecked</h1>
+                </div>
+            </div>
 
-<div class="row">
-	<div class="large-8 medium-8 columns">
-		<h2 class="subheader"><span id='daycount'>Day 0</span>, <span id='area-title'>North Dunes</span></h2>
-		<div class="message alert field" id="message"></div>
-		<div id='narration'>
-			<p>You can see nothing but white sand, as far as the eye can see. The world's sun is blinding from every direction. It's as if it goes on forever.</p>
-			<p>Nice weather, though.</p>
-		</div>
-		<!-- Grid Example -->
-		<div class="row">
-			<div class="large-12 columns">
-				<div class="callout panel" id='objects'>
-					<p>There is a solar panel on the ground here.</p>
-					<p>There is a small, two-tailed rodent here.</p>
-				</div>
-			</div>
-		</div>
+            <div class="row">
+                <div class="large-8 medium-8 columns">
+                    <h2 class="subheader"><span id='daycount'></span>, <span id='area-title'></span></h2>
+                    <div class="message alert field" id="message"></div>
+                    <div id='narration'></div>
 
-		<hr />
+                    <div class="row">
+                        <div class="large-12 columns">
+                            <div class="callout panel" id='objects'></div>
+                        </div>
+                    </div>
 
-		<div class="row" id="controls">
-			<div class="large-12 columns">
-				<div id='local-options'>
-					<span class="label radius secondary">1</span> <a>Catch the rodent.</a>
-					<br />
-					<span class="label radius secondary">9</span> <a>Pick up all the sand.</a>
-				</div>
-				<br />
-				<div>
-					<span class="label radius secondary">1</span> Go <span id='movement-options'></span>
-				</div>
-			</div>
-		</div>
-	</div>     
+                    <hr />
 
-	<div class="large-4 medium-4 columns">
-		<h4 class="subheader">Status</h5>
-		<span class="label radius info">O₂</span> <span id="air-status" class="status">Fresh</span>
-		<br />
-		<span class="label radius">H₂O</span> <span id="water-status" class="status">Moist</span>
-		<br />
-		<span class="label radius success">Food</span> <span id="food-status" class="status">Hungry</span>
-		<br />
-		<span class="label radius warning">Sleep</span> <span id="sleep-status" class="status">Breached</span>
-		<br />
-		<br />
-		<h4 class="subheader">Inventory</h5>
-		<ul class="square" id='inventory'>
-			<li>CO2 filters (2)</li>
-			<li>Water pack</li>
-			<li>Crude spear</li>
-			<li>Sand</li>
-			<li>More sand</li>
-		</ul>
-	</div>
-</div>
-</div>
-<script src="js/vendor/jquery.js"></script>
-<script src="js/foundation.min.js"></script>
+                    <div class="row" id="controls">
+                        <div class="large-12 columns">
+                            <div id='local-options'> </div>
+                            <br />
+                            <div>
+                                <span class="label radius secondary">1</span> Go <span id='movement-options'></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>     
 
-<script src="js/game/utils.js"></script>
-<script src="js/game/fluff.js"></script>
-<script src="js/game/world.js"></script>
-<script src="js/game/items.js"></script>
-<script src="js/game/player.js"></script>
-<script src="js/game/turn.js"></script>
-<script src="js/game/intro.js"></script>
-<script>
-$(document).foundation();
-start();
-</script>
+                <div class="large-4 medium-4 columns">
+                    <h4 class="subheader">Status</h4>
+                    <span class="label radius info">O₂</span> <span id="air-status" class="status"></span>
+                    <br />
+                    <span class="label radius">H₂O</span> <span id="water-status" class="status"></span>
+                    <br />
+                    <span class="label radius success">Food</span> <span id="food-status" class="status"></span>
+                    <br />
+                    <span class="label radius warning">Sleep</span> <span id="sleep-status" class="status"></span>
+                    <br />
+                    <br />
+                    <h4 class="subheader">Inventory</h4>
+                    <ul class="square" id='inventory'></ul>
+                </div>
+            </div>
+        </div>
+        <script src="js/vendor/jquery.js"></script>
+        <script src="js/foundation.min.js"></script>
 
-</body>
+        <script src="js/game/utils.js"></script>
+        <script src="js/game/fluff.js"></script>
+        <script src="js/game/world.js"></script>
+        <script src="js/game/items.js"></script>
+        <script src="js/game/player.js"></script>
+        <script src="js/game/turn.js"></script>
+        <script src="js/game/intro.js"></script>
+        <script>
+            $(document).foundation();
+            start();
+        </script>
+
+    </body>
 </html>

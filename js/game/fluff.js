@@ -1,10 +1,10 @@
-fluffTimes = {
+var fluffTimes = {
 	terrain: 0,
 	weather: 0,
 	flora: 0,
 	fauna: 0,
-	psych: 0,
-}
+	psych: 0
+};
 
 function fluff(room) {
 	return "";
@@ -16,7 +16,7 @@ function moveWords(room) {
 	var foodThreshold = Math.ceil(thePlayer.timeWithoutFood/foodRatio);
 	var sleepThreshold = Math.ceil(thePlayer.timeWithoutSleep/sleepRatio);
 
-	if(room.loc[0] == 0 && room.loc[1] == 0) { return ""; }
+	if(room.loc[0] === 0 && room.loc[1] === 0) { return ""; }
 
 	phrase = "You ";
 	switch(sleepThreshold) {
@@ -148,7 +148,7 @@ function moveWords(room) {
 				phrase += ". You snap whatever protrudes into your path in hopes of finding your way back.";
 				break;
 		}
-	} else { phrase += "." }
+	} else { phrase += "." };
 
 	return phrase;
 }
