@@ -50,7 +50,7 @@ function player() {
         if (thePlayer.currentRoom == theWorld.map["shuttle"]) {
         } else {
             this.depleteAir();
-            if (theWorld.atmosphere.match(/ breath/) || thePlayer.has("Air Canister")) {
+            if (theWorld.atmosphere.match(/ breath/) || thePlayer.has(AirCanister().name)) {
             } else {
                 this.timeWithoutAir++;
             }
@@ -75,13 +75,13 @@ function player() {
         }
     };
 
-    this.pickup = function (i) {
-        if (i.size + this.encumbrance > this.carryCapacity) {
+    this.pickup = function (item) {
+        if (item.size + this.encumbrance > this.carryCapacity) {
             messages.push("You are carrying too much");
             action(0);
         } else {
-            this.addToInventory(this.currentRoom.removeItem(i));
-            action(i["pickupTime"]);
+            this.addToInventory(this.currentRoom.removeItem(item));
+            action(item["pickupTime"]);
         }
     };
 
@@ -102,30 +102,30 @@ function player() {
         }
     };
 
-    this.addToInventory = function (i) {
+    this.addToInventory = function (item) {
         var unique = true;
         for (var index in this.inventory) {
-            if (this.inventory[index].name === i.name) {
-                this.inventory[index].quantity += i.quantity;
+            if (this.inventory[index].name === item.name) {
+                this.inventory[index].quantity += item.quantity;
                 unique = false;
                 break;
             }
         }
         if (unique) {
-            this.inventory.push(i);
+            this.inventory.push(item);
         }
-        this.encumbrance += i.size * i.quantity;
+        this.encumbrance += item.size * item.quantity;
     };
 
-    this.removeFromInventory = function (i) {
-        var removed = jQuery.extend(true, {}, i);
-        i.quantity--;
-        if (i.quantity < 1) {
-            var index = this.inventory.indexOf(i);
+    this.removeFromInventory = function (item) {
+        var removed = jQuery.extend(true, {}, item);
+        item.quantity--;
+        if (item.quantity < 1) {
+            var index = this.inventory.indexOf(item);
             this.inventory.splice(index, 1);
         }
         removed.quantity = 1;
-        this.encumbrance -= i.size;
+        this.encumbrance -= item.size;
         return removed;
     };
 
@@ -133,7 +133,7 @@ function player() {
         var available = false;
         for (var i in this.inventory) {
             var currItem = this.inventory[i].name;
-            if (currItem === "Water Bottle" || currItem === "Half-Empty Bottle") {
+            if (currItem === WaterBottle().name || currItem === HalfEmptyBottle().name) {
                 available = true;
                 break;
             }
@@ -150,14 +150,11 @@ function player() {
             bottle["drinks"] = 0;
             this.removeFromInventory(bottle);
             newBottle = {};
-            if (bottle["name"] === "Half-Empty Bottle") {
-                newBottle = new Item();
-                newBottle["name"] = "Empty Bottle";
-            } else {
-                newBottle = new Item();
-                newBottle["name"] = "Half-Empty Bottle";
+            if (bottle["name"] === HalfEmptyBottle().name) {
+                newBottle = EmptyBottle();
+            } else if(bottle["name"] === WaterBottle().name){
+                newBottle = HalfEmptyBottle();
             }
-            newBottle["drinks"] = 0;
             this.addToInventory(newBottle);
         } else {
             bottle["drinks"]++;
@@ -167,10 +164,10 @@ function player() {
     this.selectBottleToDrink = function () {
         var bottle = {};
         for (var i in this.inventory) {
-            if (this.inventory[i].name === "Half-Empty Bottle") {
+            if (this.inventory[i].name === HalfEmptyBottle().name) {
                 bottle = this.inventory[i];
                 break;
-            } else if (this.inventory[i].name === "Water Bottle") {
+            } else if (this.inventory[i].name === WaterBottle().name) {
                 bottle = this.inventory[i];
             }
         }
@@ -181,7 +178,7 @@ function player() {
         var available = false;
         for (var i in this.inventory) {
             var currItem = this.inventory[i].name;
-            if (currItem === "Ration") {
+            if (currItem === Ration.name) {
                 available = true;
                 break;
             }
@@ -192,7 +189,7 @@ function player() {
     this.depleteFood = function () {
         for (var i in this.inventory) {
             var currItem = this.inventory[i].name;
-            if (currItem === "Ration") {
+            if (currItem === Ration().name) {
                 this.removeFromInventory(this.inventory[i]);
                 break;
             }
@@ -201,16 +198,14 @@ function player() {
     this.depleteAir = function () {
         if (this.has("Air Canister")) {
             for (var index in this.inventory) {
-                if (this.inventory[index].name === "Air Canister") {
+                if (this.inventory[index].name === AirCanister().name) {
                     if (!("uses" in this.inventory[index])) {
                         this.inventory[index].uses = 0;
                     }
                     if (this.inventory[index].uses + 1 >= breathingRate) {
                         this.inventory[index].uses = 0;
                         this.removeFromInventory(this.inventory[index]);
-                        newCanister = new Item();
-                        newCanister.name = "Empty Air Canister";
-                        this.addToInventory(newCanister);
+                        this.addToInventory(EmptyCanister());
                     } else {
                         this.inventory[index].uses++;
                     }
@@ -224,17 +219,15 @@ function fillBottle() {
     var inv = thePlayer.inventory;
     var bottleIndex = 0;
     for (var index in inv) {
-        if (inv[index].name === "Empty Bottle") {
+        if (inv[index].name === EmptyBottle().name) {
             bottleIndex = index;
             break;
-        } else if (inv[index].name === "Half-Empty Bottle") {
+        } else if (inv[index].name === HalfEmptyBottle().name) {
             bottleIndex = index;
         }
     }
     thePlayer.removeFromInventory(inv[bottleIndex]);
-    var newBottle = new Item();
-    newBottle["name"] = "Water Bottle";
-    thePlayer.addToInventory(newBottle);
+    thePlayer.addToInventory(WaterBottle());
     action(1);
 }
 
@@ -242,15 +235,13 @@ function fillCanister() {
     var inv = thePlayer.inventory;
     var canisterIndex = 0;
     for (var index in inv) {
-        if (inv[index].name === "Empty Air Canister") {
+        if (inv[index].name === EmptyCanister().name) {
             canisterIndex = index;
             break;
         }
     }
     thePlayer.removeFromInventory(inv[canisterIndex]);
-    var newCanister = new Item();
-    newCanister["name"] = "Air Canister";
-    thePlayer.addToInventory(newCanister);
+    thePlayer.addToInventory(AirCanister());
     action(1);
 }
 
@@ -349,19 +340,13 @@ function initPlayer() {
 }
 
 function initInventory() {
-    var bottles = new Item();
-    bottles["name"] = "Water Bottle";
+    var bottles = WaterBottle();
     bottles["quantity"] = 5;
-    bottles["drinks"] = 0;
     thePlayer.addToInventory(bottles);
-    var rations = new Item();
-    rations["name"] = "Ration";
-    rations["size"] = 2;
+    var rations = Ration();
     rations["quantity"] = 5;
     thePlayer.addToInventory(rations);
-    var canisters = new Item();
-    canisters["name"] = "Air Canister";
+    var canisters = new AirCanister();
     canisters["quantity"] = 5;
-    canisters["uses"] = 0;
     thePlayer.addToInventory(canisters);
 }

@@ -128,20 +128,13 @@ function room(x, y) {
 function generateResourceDrop() {
     var drops = [];
     if (Math.random() < resourceChance) {
-        foodDrop = new Item();
-        foodDrop.name = "Ration";
-        foodDrop.size = 2;
-        drops.push(foodDrop);
+        drops.push(Ration());
     }
     if (Math.random() < resourceChance) {
-        waterDrop = new Item();
-        waterDrop.name = "Water Bottle";
-        drops.push(waterDrop);
+        drops.push(WaterBottle());
     }
     if (Math.random() < resourceChance) {
-        airDrop = new Item();
-        airDrop.name = "Air Canister";
-        drops.push(airDrop);
+        drops.push(AirCanister());
     }
     return drops;
 }
@@ -207,14 +200,14 @@ function shuttleOptions() {
 
 function  waterRefillOption() {
     var str = "";
-    if (workingShipSystems.waterRecycler && shipHasPower() && (thePlayer.has("Empty Bottle") || thePlayer.has("Half-Empty Bottle"))) {
+    if (workingShipSystems.waterRecycler && shipHasPower() && (thePlayer.has(EmptyBottle().name) || thePlayer.has(HalfEmptyBottle().name))) {
         str += "<span class='label radius secondary'>1</span> <a onclick='fillBottle()'>Fill a Water Bottle</a><br />";
     }
     return str;
 }
 function airRefillOption() {
     var str = "";
-    if (workingShipSystems.airRecycler && shipHasPower() && thePlayer.has("Empty Air Canister")) {
+    if (workingShipSystems.airRecycler && shipHasPower() && thePlayer.has(EmptyCanister().name)) {
         str += "<span class='label radius secondary'>1</span> <a onclick='fillCanister()'>Fill an Air Canister</a><br />";
     }
     return str;
@@ -317,20 +310,14 @@ function initWorld() {
 
 function initStash() {
     var stash = [];
-    var bottles = new Item();
-    bottles["name"] = "Water Bottle";
+    var bottles = WaterBottle();
     bottles["quantity"] = 10;
-    bottles["drinks"] = 0;
     stash.push(bottles);
-    var rations = new Item();
-    rations["name"] = "Ration";
-    rations["size"] = 2;
+    var rations = Ration();
     rations["quantity"] = 10;
     stash.push(rations);
-    var canisters = new Item();
-    canisters["name"] = "Air Canister";
+    var canisters = AirCanister();
     canisters["quantity"] = 10;
-    canisters["uses"] = 0;
     stash.push(canisters);
     theWorld.map["shuttle"].contents = stash;
 }
